@@ -1,18 +1,26 @@
-
-import { Protect, useClerk, useUser } from "@clerk/clerk-react";
+import { useClerk, useUser } from "@clerk/clerk-react";
 import {
+  AlignLeft,
   Eraser,
   FileText,
+  Folder,
+  Gem,
   Hash,
+  Heart,
+  History,
   House,
   Image,
+  Languages,
   LogOut,
+  RefreshCw,
   Scissors,
   SquarePen,
+  User,
   Users,
+  Workflow,
 } from "lucide-react";
-import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useCredits } from "../context/CreditsContext";
 
 const navItems = [
   { to: "/ai", label: "Dashboard", Icon: House },
@@ -21,32 +29,35 @@ const navItems = [
   { to: "/ai/generate-images", label: "Generate Images", Icon: Image },
   { to: "/ai/remove-background", label: "Remove Background", Icon: Eraser },
   { to: "/ai/remove-object", label: "Remove Object", Icon: Scissors },
-  { to: "/ai/review-resume", label: "Review Resume", Icon: FileText },
+  { to: "/ai/review-resume", label: "Resume & ATS", Icon: FileText },
+  { to: "/ai/rewrite", label: "Rewrite Content", Icon: RefreshCw },
+  { to: "/ai/summarize", label: "Summarize", Icon: AlignLeft },
+  { to: "/ai/tone", label: "Tone Conversion", Icon: Languages },
+  { to: "/ai/idea-to-content", label: "Idea to Content", Icon: Workflow },
+  { to: "/ai/workspaces", label: "Workspaces", Icon: Folder },
+  { to: "/ai/favourites", label: "Favourites", Icon: Heart },
+  { to: "/ai/history", label: "History", Icon: History },
   { to: "/ai/community", label: "Community", Icon: Users },
+  { to: "/ai/profile", label: "My Profile", Icon: User },
 ];
 
 const Sidebar = ({ sidebar, setSidebar }) => {
   const { user } = useUser();
-  const { signOut, openUserProfile } = useClerk();
+  const { signOut } = useClerk();
+  const { credits } = useCredits();
+  const navigate = useNavigate();
 
   return (
-    <aside
-      className={`z-40 flex w-60 shrink-0 flex-col items-center justify-between border-r border-purple-100 bg-gradient-to-b from-white via-[#fcf9ff] to-[#fff7fb] transition-all duration-300 ease-in-out max-sm:absolute max-sm:bottom-0 max-sm:top-14 ${
+    <div
+      className={`w-60 shrink-0 bg-white/80 backdrop-blur border-r border-violet-100 flex flex-col justify-between items-center max-sm:absolute max-sm:z-20 top-14 bottom-0 ${
         sidebar ? "translate-x-0" : "max-sm:-translate-x-full"
-      }`}
+      } transition-all duration-300 ease-in-out`}
     >
-      <div className="my-7 w-full">
-        <img
-          src={user?.imageUrl}
-          alt="Profile"
-          className="h-14 w-14 rounded-full border-2 border-purple-200 object-cover shadow-sm mx-auto"
-        />
+      <div className="w-full flex-1 min-h-0 overflow-y-auto py-5">
+        <img src={user.imageUrl} alt="" className="w-13 rounded-full mx-auto" />
+        <h1 className="mt-1 text-center">{user.fullName}</h1>
 
-        <h1 className="mt-2 px-3 text-center font-semibold text-slate-800">
-          {user?.fullName}
-        </h1>
-
-        <div className="mt-6 space-y-1 px-3 text-sm font-medium text-gray-600">
+        <div className="px-6 mt-5 text-sm text-gray-600 font-medium space-y-0.5">
           {navItems.map(({ to, label, Icon }) => (
             <NavLink
               key={to}
@@ -54,64 +65,43 @@ const Sidebar = ({ sidebar, setSidebar }) => {
               end={to === "/ai"}
               onClick={() => setSidebar(false)}
               className={({ isActive }) =>
-                `flex items-center gap-3 rounded-xl px-3 py-3 transition-all duration-200 ${
+                `px-3.5 py-2.5 flex items-center gap-3 rounded ${
                   isActive
-                    ? "bg-gradient-to-r from-violet-600 to-pink-500 text-white shadow-md shadow-purple-500/20"
-                    : "hover:bg-purple-50 hover:text-purple-700"
+                    ? "btn-gradient"
+                    : "hover:bg-primary/10"
                 }`
               }
             >
-              {({ isActive }) => (
-                <>
-                  <Icon
-                    className={`h-4 w-4 shrink-0 ${
-                      isActive ? "text-white" : ""
-                    }`}
-                  />
-                  <span>{label}</span>
-                </>
-              )}
+              <Icon className="w-4 h-4" />
+              {label}
             </NavLink>
           ))}
         </div>
       </div>
 
-      <div className="flex w-full items-center justify-between gap-2 border-t border-purple-100 bg-white/60 p-4">
-        <button
-          type="button"
-          onClick={openUserProfile}
-          className="flex min-w-0 items-center gap-2 rounded-xl p-1 text-left transition hover:bg-purple-50"
+      <div className="w-full border-t border-violet-100 p-4 px-7 flex items-center justify-between">
+        <div
+          onClick={() => {
+            navigate("/ai/profile");
+            setSidebar(false);
+          }}
+          className="flex gap-2 items-center cursor-pointer"
         >
-          <img
-            src={user?.imageUrl}
-            className="h-9 w-9 shrink-0 rounded-full object-cover"
-            alt="Profile"
-          />
-
-          <span className="min-w-0">
-            <span className="block truncate text-sm font-medium text-slate-800">
-              {user?.fullName}
-            </span>
-
-            <span className="block text-xs text-gray-500">
-              <Protect plan="premium" fallback="Free">
-                Premium
-              </Protect>{" "}
-              Plan
-            </span>
-          </span>
-        </button>
-
-        <button
-          type="button"
+          <img src={user.imageUrl} className="w-8 rounded-full" alt="" />
+          <div>
+            <h1 className="text-sm font-medium">{user.firstName || user.fullName}</h1>
+            <p className="text-xs text-gray-500 flex items-center gap-1">
+              <Gem className="w-3 h-3" />
+              {credits ?? "—"} credits left
+            </p>
+          </div>
+        </div>
+        <LogOut
           onClick={() => signOut()}
-          aria-label="Sign out"
-          className="shrink-0 rounded-lg p-2 text-gray-400 transition hover:bg-pink-50 hover:text-pink-600"
-        >
-          <LogOut className="h-4 w-4" />
-        </button>
+          className="w-4.5 text-gray-400 hover:text-gray-700 transition cursor-pointer"
+        />
       </div>
-    </aside>
+    </div>
   );
 };
 

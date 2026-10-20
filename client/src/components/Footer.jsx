@@ -1,86 +1,81 @@
-
-import React from "react";
-import { assets } from "../assets/assets";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
+import Logo from "./Logo";
 
 const Footer = () => {
+  const [email, setEmail] = useState("");
+
+  const onSubscribe = (e) => {
+    e.preventDefault();
+    toast.success("Thanks for subscribing!");
+    setEmail("");
+  };
+
   return (
-    <footer className="relative mt-16 w-full overflow-hidden border-t border-purple-100 bg-gradient-to-br from-[#fbf7ff] via-white to-[#fff3f9] px-5 pt-12 text-gray-600 sm:mt-20 sm:px-8 sm:pt-14 md:px-16 lg:px-24 xl:px-32">
-
-      {/* Background glow */}
-      <div className="pointer-events-none absolute -right-20 top-0 h-64 w-64 rounded-full bg-pink-200/30 blur-3xl" />
-      <div className="pointer-events-none absolute -left-20 bottom-0 h-64 w-64 rounded-full bg-purple-200/30 blur-3xl" />
-
+    <footer id="contact" className="w-full bg-white/60 backdrop-blur text-gray-600 px-6 md:px-16 lg:px-24 xl:px-32 pt-14 mt-24 border-t border-violet-100">
       {/* Top Section */}
-      <div className="relative z-10 flex flex-col justify-between gap-10 border-b border-purple-100 pb-10 md:flex-row md:gap-12 md:pb-12">
-
+      <div className="flex flex-col md:flex-row justify-between gap-14 pb-12 border-b border-gray-300">
         {/* Brand */}
-        <div className="w-full max-w-md">
-          <img
-            src={assets.logo}
-            alt="GINI-AI logo"
-            className="h-10 w-auto object-contain"
-          />
-
-          <p className="mt-5 text-sm leading-relaxed text-gray-600">
-            <strong className="text-purple-700">GINI-AI</strong> empowers
-            creators and businesses with intelligent AI-driven tools. From
-            content writing to image generation, our platform helps you work
-            smarter, faster, and more efficiently.
+        <div className="max-w-md">
+          <Logo />
+          <p className="mt-6 text-sm leading-relaxed">
+            <strong>GINI</strong> brings multiple AI productivity tools into one platform.
+            From content writing to image generation and resume analysis, work smarter,
+            faster, and more efficiently.
           </p>
         </div>
 
         {/* Links & Newsletter */}
-        <div className="flex flex-col gap-10 sm:flex-row sm:gap-12 md:justify-end">
-
-          {/* Company Links */}
-          <div className="shrink-0">
-            <h2 className="mb-4 font-semibold text-slate-800">
-              Company
-            </h2>
-
-            <ul className="space-y-3 text-sm">
-              {["Home", "About Us", "Contact Us", "Privacy Policy"].map(
-                (link) => (
-                  <li key={link}>
-                    <a
-                      href="#"
-                      className="transition-colors duration-200 hover:text-purple-700"
-                    >
-                      {link}
-                    </a>
-                  </li>
-                )
-              )}
+        <div className="flex flex-col sm:flex-row gap-14 flex-1 justify-end">
+          <div>
+            <h2 className="text-gray-900 font-semibold mb-4">Quick links</h2>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <Link to="/" className="hover:text-primary transition">
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link to="/ai" className="hover:text-primary transition">
+                  Dashboard
+                </Link>
+              </li>
+              <li>
+                <Link to="/ai/history" className="hover:text-primary transition">
+                  History
+                </Link>
+              </li>
+              <li>
+                <Link to="/ai/workspaces" className="hover:text-primary transition">
+                  Workspaces
+                </Link>
+              </li>
             </ul>
           </div>
 
-          {/* Newsletter */}
-          <div className="w-full max-w-sm">
-            <h2 className="mb-4 font-semibold text-slate-800">
-              Subscribe to our newsletter
-            </h2>
-
-            <p className="mb-5 text-sm leading-relaxed text-gray-600">
-              Get the latest updates, AI insights, and product announcements
-              delivered straight to your inbox.
+          <div className="max-w-sm">
+            <h2 className="text-gray-900 font-semibold mb-4">Subscribe to our newsletter</h2>
+            <p className="text-sm mb-5">
+              Get the latest updates, AI insights, and product announcements delivered to
+              your inbox.
             </p>
-
-            <form className="flex flex-col gap-3 min-[420px]:flex-row">
+            <form onSubmit={onSubscribe} className="flex items-center gap-2">
               <label htmlFor="email" className="sr-only">
                 Email address
               </label>
-
               <input
                 id="email"
                 type="email"
                 required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
-                className="min-w-0 flex-1 rounded-xl border border-purple-100 bg-white/80 px-4 py-3 text-sm outline-none transition placeholder:text-gray-400 focus:border-purple-300 focus:ring-2 focus:ring-purple-200/70"
+                className="w-full border border-gray-300 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
               />
-
               <button
                 type="submit"
-                className="rounded-xl bg-gradient-to-r from-violet-600 to-pink-500 px-5 py-3 text-sm font-medium text-white shadow-md shadow-purple-500/15 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg active:scale-95"
+                className="btn-gradient text-sm px-5 py-2 rounded-full transition cursor-pointer"
               >
                 Subscribe
               </button>
@@ -90,27 +85,26 @@ const Footer = () => {
       </div>
 
       {/* Bottom Section */}
-      <div className="relative z-10 space-y-3 py-6 text-center text-xs text-gray-500 sm:text-sm">
+      <div className="text-center text-xs md:text-sm mt-8 pb-6 text-gray-500 space-y-2">
         <p>
           © {new Date().getFullYear()}{" "}
           <a
             href="https://www.linkedin.com/"
             target="_blank"
             rel="noopener noreferrer"
-            className="font-medium text-purple-700 transition hover:text-pink-600"
+            className="hover:text-primary font-medium"
           >
             Nisha Yadav
-          </a>
-          . All rights reserved.
+          </a>{" "}
+          &amp; Sujata Santra. All rights reserved.
         </p>
-
         <p>
           GitHub:{" "}
           <a
-            href="https://github.com/Ynisha"
+            href="https://github.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="transition hover:text-purple-700"
+            className="hover:text-primary"
           >
             Ynisha
           </a>

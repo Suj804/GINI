@@ -1,5 +1,5 @@
-// import React, { useEffect } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 import Home from "./pages/Home";
 import Layout from "./pages/Layout";
 import Dashboard from "./pages/Dashboard";
@@ -9,14 +9,20 @@ import GenerateImages from "./pages/GenerateImages";
 import RemoveBackground from "./pages/RemoveBackground";
 import RemoveObject from "./pages/RemoveObject";
 import ReviewResume from "./pages/ReviewResume";
+import Rewrite from "./pages/Rewrite";
+import Summarize from "./pages/Summarize";
+import ToneConvert from "./pages/ToneConvert";
+import IdeaToContent from "./pages/IdeaToContent";
+import Workspaces from "./pages/Workspaces";
+import Favourites from "./pages/Favourites";
+import History from "./pages/History";
 import Community from "./pages/Community";
-// import { useAuth } from "@clerk/clerk-react";
-import {Toaster} from 'react-hot-toast'
+import Profile from "./pages/Profile";
 
 const App = () => {
   return (
     <div>
-      <Toaster/>
+      <Toaster />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/ai" element={<Layout />}>
@@ -27,8 +33,17 @@ const App = () => {
           <Route path="remove-background" element={<RemoveBackground />} />
           <Route path="remove-object" element={<RemoveObject />} />
           <Route path="review-resume" element={<ReviewResume />} />
+          <Route path="rewrite" element={<Rewrite />} />
+          <Route path="summarize" element={<Summarize />} />
+          <Route path="tone" element={<ToneConvert />} />
+          <Route path="idea-to-content" element={<IdeaToContent />} />
+          <Route path="workspaces" element={<Workspaces />} />
+          <Route path="favourites" element={<Favourites />} />
+          <Route path="history" element={<History />} />
           <Route path="community" element={<Community />} />
+          <Route path="profile" element={<Profile />} />
         </Route>
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </div>
   );

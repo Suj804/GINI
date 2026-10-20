@@ -1,67 +1,107 @@
-
-import React from "react";
 import { useNavigate } from "react-router-dom";
-import { assets } from "../assets/assets";
+import { ArrowRight, Check, Layers, Play, ShieldCheck, Sparkles, Zap } from "lucide-react";
+
+const stats = [
+  { Icon: Layers, label: "AI tools", value: "10" },
+  { Icon: Zap, label: "Credits", value: "Free to start" },
+  { Icon: ShieldCheck, label: "Sign-in", value: "Secure" },
+];
 
 const Hero = () => {
   const navigate = useNavigate();
 
+  const scrollToTools = () => {
+    document.getElementById("tools")?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
-    <section className="relative flex min-h-screen w-full flex-col justify-center overflow-hidden bg-gradient-to-br from-[#fdf4ff] via-[#f5f0ff] to-[#fff0f6] bg-cover bg-no-repeat px-4 pt-24 pb-16 sm:px-8 md:px-12 lg:px-20 xl:px-32">
+    <section className="theme-bg relative overflow-hidden min-h-screen px-4 sm:px-10 xl:px-32 pt-32 pb-16 flex items-center">
+      {/* Decorative colour blobs and glass orbs */}
+      <div className="blob -left-24 top-40 w-80 h-80 bg-primary/40" />
+      <div className="blob right-0 -bottom-20 w-96 h-96 bg-accent/40" />
+      <div className="orb float-slow -left-10 top-28 w-28 h-28 max-sm:hidden" />
+      <div className="orb float-slow right-[8%] top-24 w-16 h-16" />
+      <div className="orb float-slow -right-16 bottom-16 w-52 h-52 max-lg:hidden" />
 
-      {/* Soft background glow effects */}
-      <div className="pointer-events-none absolute -top-24 -left-20 h-64 w-64 rounded-full bg-purple-300/30 blur-3xl sm:h-80 sm:w-80" />
-
-      <div className="pointer-events-none absolute top-1/3 -right-20 h-72 w-72 rounded-full bg-pink-300/30 blur-3xl sm:h-96 sm:w-96" />
-
-      <div className="pointer-events-none absolute bottom-0 left-1/3 h-56 w-56 rounded-full bg-violet-200/40 blur-3xl" />
-
-      {/* Heading */}
-      <div className="relative z-10 mb-8 text-center">
-        <h1 className="mx-auto text-3xl font-semibold leading-tight tracking-tight text-slate-800 sm:text-5xl md:text-6xl 2xl:text-7xl">
-          Create high-impact content
-          <br />
-          with{" "}
-          <span className="bg-gradient-to-r from-violet-600 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-            AI-powered tools
+      <div className="relative z-10 w-full max-w-6xl mx-auto grid lg:grid-cols-2 gap-14 items-center">
+        {/* Left: copy */}
+        <div>
+          <span className="glass inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs text-slate-700">
+            <Sparkles className="w-3.5 h-3.5 text-primary" />
+            New: Idea-to-Content pipeline
           </span>
-        </h1>
 
-        <p className="mx-auto mt-5 max-w-xs text-gray-600 sm:max-w-lg sm:text-base max-sm:text-xs 2xl:max-w-xl">
-          Accelerate your content creation using our premium AI solutions.
-          Write compelling articles, generate visuals, and streamline your
-          workflow with confidence.
-        </p>
-      </div>
+          <h1 className="mt-6 text-4xl sm:text-5xl 2xl:text-6xl font-semibold leading-tight text-ink">
+            Create, edit and polish content in one calm place
+          </h1>
 
-      {/* Call to Action */}
-      <div className="relative z-10 flex flex-wrap justify-center gap-3 text-sm max-sm:text-xs sm:gap-4">
-        <button
-          onClick={() => navigate("/ai")}
-          className="rounded-xl bg-gradient-to-r from-violet-600 via-purple-500 to-pink-500 px-6 py-3 text-white shadow-lg shadow-purple-500/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-pink-500/25 active:scale-95 sm:px-10"
-        >
-          Get Started for Free
-        </button>
+          <p className="mt-5 max-w-md text-slate-600">
+            GINI brings article writing, image generation, resume scoring and more into
+            a single workspace, so you stop switching between apps.
+          </p>
 
-        <button
-          className="rounded-xl border border-purple-200/80 bg-white/70 px-6 py-3 text-slate-700 shadow-sm backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-purple-300 hover:bg-white hover:shadow-lg active:scale-95 sm:px-10"
-        >
-          Watch Product Demo
-        </button>
-      </div>
+          <div className="mt-8 flex flex-col gap-3 max-w-sm">
+            <button
+              onClick={() => navigate("/ai")}
+              className="btn-gradient flex items-center justify-center gap-2 px-8 py-3.5 rounded-full cursor-pointer active:scale-95"
+            >
+              Start free <ArrowRight className="w-4 h-4" />
+            </button>
+            <button
+              onClick={scrollToTools}
+              className="glass flex items-center justify-center gap-2 px-8 py-3.5 rounded-full text-slate-700 cursor-pointer active:scale-95"
+            >
+              <Play className="w-3.5 h-3.5 fill-current" /> Explore the tools
+            </button>
+          </div>
 
-      {/* Social Proof */}
-      <div className="relative z-10 mx-auto mt-10 flex max-w-full flex-wrap items-center justify-center gap-3 text-center text-xs text-gray-600 sm:text-sm">
-        <img
-          src={assets.user_group}
-          alt="Trusted users"
-          className="h-8 w-auto shrink-0"
-        />
-        <span>
-          Trusted by over{" "}
-          <span className="font-semibold text-purple-700">10,000+</span>{" "}
-          creators worldwide
-        </span>
+          <ul className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-xs text-slate-500">
+            {["Free credits to start", "Secure sign-in", "Built for students and creators"].map(
+              (t) => (
+                <li key={t} className="flex items-center gap-1.5">
+                  <Check className="w-3.5 h-3.5 text-primary" /> {t}
+                </li>
+              )
+            )}
+          </ul>
+        </div>
+
+        {/* Right: glass product preview */}
+        <div className="glass rounded-3xl p-5 w-full max-w-md mx-auto lg:ml-auto">
+          <div className="rounded-2xl bg-white/80 px-4 py-3 flex items-center justify-between">
+            <span className="flex items-center gap-2 text-sm font-medium text-ink">
+              <Sparkles className="w-4 h-4 text-primary" /> GINI Chat
+            </span>
+            <span className="flex items-center gap-1.5 text-xs text-emerald-600">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> Online
+            </span>
+          </div>
+
+          <div className="mt-3 ml-auto max-w-[85%] rounded-2xl bg-white/85 px-4 py-2.5 text-sm text-slate-700 shadow-sm">
+            Turn my idea about remote work into an article with an image
+          </div>
+
+          <div className="mt-3 rounded-2xl bg-white/70 p-4 text-sm text-slate-700">
+            <p className="flex items-center gap-2 font-medium text-ink">
+              <Sparkles className="w-4 h-4 text-primary" /> Here is the plan:
+            </p>
+            <ul className="mt-2 space-y-1.5 text-[13px] text-slate-600 list-disc pl-5">
+              <li>Write a structured article from your idea</li>
+              <li>Generate a matching image</li>
+              <li>Save the result to your workspace</li>
+            </ul>
+          </div>
+
+          <div className="mt-3 grid grid-cols-3 gap-3">
+            {stats.map(({ Icon, label, value }) => (
+              <div key={label} className="rounded-2xl bg-white/70 p-3 text-center">
+                <Icon className="w-4 h-4 mx-auto text-primary" />
+                <p className="mt-1.5 text-[11px] text-slate-500">{label}</p>
+                <p className="text-xs font-medium text-ink">{value}</p>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );

@@ -1,103 +1,128 @@
-import { FileText, Sparkles } from 'lucide-react';
-import React, { useState } from 'react'
-import axios from "axios";
+import { FileText } from "lucide-react";
+import { useState } from "react";
 import toast from "react-hot-toast";
-import { useAuth } from "@clerk/clerk-react";
-import Markdown from "react-markdown";
+import ToolLayout from "../components/ToolLayout";
+import ResultView from "../components/ResultView";
+import useTool from "../hooks/useTool";
+import { handleFileChange } from "../lib/validate";
+import { CREDIT_COST, MAX_FILE_MB, fieldClass } from "../lib/config";
 
-
-axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
-
-const ReviewResume = () => {
-  const [input, setInput] = useState("");
-  const [loading, setLoading] = useState(false);
-    const [content, setContent] = useState("");
-  
-    const { getToken } = useAuth();
-    const onSubmitHandler = async (e) => {
-      e.preventDefault();
-      try {
-        setLoading(true)
-
-
-      const formData = new FormData()
-      formData.append('resume', input)
-
-      const { data } = await axios.post(
-        "/api/ai/resume-review", formData,
-        {
-          headers: { Authorization: `Bearer ${await getToken()}` },
-        }
-      );
-      if (data.success) {
-        setContent(data.content);
-      } else {
-        toast.error(data.message);
-      }
-      } catch (error) {
-        toast.error(error.message);
-      }
-      setLoading(false)
-    };
-  return (
-    <div className="h-full overflow-y-scroll p-6 flex items-start flex-wrap gap-4 text-slate-700">
-      {/* Left col */}
-      <form
-        onSubmit={onSubmitHandler}
-        className="w-full max-w-lg p-4 bg-white rounded-lg border border-gray-200"
-      >
-        <div className="flex items-center gap-3">
-          <Sparkles className="w-6 text-[#00da83]" />
-          <h1 className="text-xl font-semibold">Resume Review</h1>
-        </div>
-        <p className="mt-6 text-sm font-semibold">Upload Resume</p>
-
-        <input
-          onChange={(e) => setInput(e.target.files[0])}
-          type="file"
-          accept="application/pdf"
-          className="w-full p-2 px-3 mt-2 outline-none text-sm rounded-md border border-gray-300 text-gray-600"
-          required
-        />
-
-        <p className="text-xs text-gray-500 font-light mt-1">
-          Support PDF resume only
-        </p>
-        <button disabled={loading} className="w-full flex justify-center items-center gap-2 bg-gradient-to-r from-[#00da83] to-[#009bb3] text-white px-4 py-2 mt-6 text-sm rounded-lg cursor-pointer">
-        {loading ? (
-            <span className="w-4 h-4 my-1 rounded-full border-2 border-t-transparent animate-spin"></span>
-          ) : (
-            <FileText className="w-5 " />
-          )}
-           Review Resume
-        </button>
-      </form>
-      {/* right col */}
-      <div className="w-full max-w-lg p-4 bg-white rounded-lg flex flex-col border border-gray-200 min-h-96 max-h-[600px]">
-        <div className="flex items-center gap-3">
-          <FileText className="w-5 h-5 text-[#00da83]" />
-          <h1 className="text-xl font-semibold">Analysis Results</h1>
-        </div>
-        {
-          !content ? (<div className="flex-1 flex justify-center items-center">
-            <div className="text-sm flex flex-col items-center gap-5 text-gray-400">
-              <FileText className="w-9 h-9" />
-              <p>Upload a resume and click "Review Resume" to get started </p>
-            </div>
-          </div>) : (
-            <div className='mt-3 h-full overflow-y-scroll text-sm text-slate-600'>
-              <div className='reset-tw'>
-                <Markdown >
-                  {content}
-                </Markdown>
-              </div>
-            </div>
-          )
-        }
-        
+const KeywordList = ({ title, list, className }) =>
+  Array.isArray(list) && list.length > 0 ? (
+    <div className="mt-3">
+      <p className="text-xs font-semibold text-slate-700">{title}</p>
+      <div className="mt-1.5 flex flex-wrap gap-1.5">
+        {list.map((word) => (
+          <span key={word} className={`text-xs px-2.5 py-0.5 rounded-full border ${className}`}>
+            {word}
+          </span>
+        ))}
       </div>
     </div>
-  )
-}
+  ) : null;
 
-export default ReviewResume
+// Shown only when the backend returns an `ats` object
+const AtsReport = ({ ats }) => {
+  const score = Math.max(0, Math.min(100, Number(ats.score) || 0));
+  const bar = score >= 75 ? "bg-green-500" : score >= 50 ? "bg-amber-500" : "bg-red-500";
+
+  return (
+    <div className="mb-4 p-3 rounded-lg bg-gray-50 border border-gray-200">
+      <div className="flex items-center justify-between">
+        <p className="text-sm font-semibold text-slate-700">ATS score</p>
+        <p className="text-lg font-semibold text-slate-800">{score}/100</p>
+      </div>
+      <div className="mt-2 h-2 rounded-full bg-gray-200 overflow-hidden">
+        <div className={`h-full ${bar}`} style={{ width: `${score}%` }} />
+      </div>
+      <KeywordList
+        title="Matched keywords"
+        list={ats.matched_keywords}
+        className="bg-green-50 text-green-700 border-green-200"
+      />
+      <KeywordList
+        title="Missing keywords"
+        list={ats.missing_keywords}
+        className="bg-red-50 text-red-700 border-red-200"
+      />
+      {Array.isArray(ats.suggestions) && ats.suggestions.length > 0 && (
+        <div className="mt-3">
+          <p className="text-xs font-semibold text-slate-700">Suggestions</p>
+          <ul className="mt-1 list-disc pl-5 text-xs text-slate-600 space-y-1">
+            {ats.suggestions.map((s) => (
+              <li key={s}>{s}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+};
+
+const ReviewResume = () => {
+  const [file, setFile] = useState(null);
+  const [jobDescription, setJobDescription] = useState("");
+  const { loading, result, run } = useTool(CREDIT_COST.resume);
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    if (!file) {
+      toast.error("Please upload your resume as a PDF.");
+      return;
+    }
+    const formData = new FormData();
+    formData.append("resume", file);
+    if (jobDescription.trim()) formData.append("jobDescription", jobDescription.trim());
+    run("post", "/api/ai/resume-review", formData, `Resume review: ${file.name}`);
+  };
+
+  return (
+    <ToolLayout
+      title="Resume Review & ATS Score"
+      Icon={FileText}
+      color="#00da83"
+      gradient="bg-gradient-to-r from-[#00da83] to-[#009bb3]"
+      cost={CREDIT_COST.resume}
+      loading={loading}
+      onSubmit={onSubmit}
+      submitLabel="Review resume"
+      outputTitle="Analysis results"
+      emptyText='Upload a resume and click "Review resume" to get started'
+      output={
+        result?.content ? (
+          <ResultView
+            content={result.content}
+            type="resume-review"
+            prompt={result.label}
+            header={result.ats ? <AtsReport ats={result.ats} /> : null}
+          />
+        ) : null
+      }
+    >
+      <p className="mt-6 text-sm font-semibold">Upload Resume</p>
+      <input
+        onChange={(e) => handleFileChange(e, setFile)}
+        type="file"
+        accept="application/pdf"
+        className={`${fieldClass} text-gray-600`}
+        required
+      />
+      <p className="text-xs text-gray-500 font-light mt-1">
+        PDF resumes only, up to {MAX_FILE_MB} MB
+      </p>
+
+      <p className="mt-5 text-sm font-semibold">
+        Job description <span className="font-normal text-gray-400">(optional)</span>
+      </p>
+      <textarea
+        onChange={(e) => setJobDescription(e.target.value)}
+        value={jobDescription}
+        rows={5}
+        className={fieldClass}
+        placeholder="Paste the job description to get an ATS score and missing keywords for this role"
+      />
+    </ToolLayout>
+  );
+};
+
+export default ReviewResume;
