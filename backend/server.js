@@ -10,6 +10,24 @@ const app=express();
 await connectCloudinary()
 app.use(cors());
 app.use(clerkMiddleware());
+app.get('/debug-auth', (req, res) => {
+    const auth = getAuth(req);
+
+    res.json({
+        userId: auth.userId ?? null,
+        authorizationHeaderPresent: Boolean(
+            req.headers.authorization
+        ),
+        publishableKeyConfigured: Boolean(
+            process.env.CLERK_PUBLISHABLE_KEY
+        ),
+        secretKeyConfigured: Boolean(
+            process.env.CLERK_SECRET_KEY
+        )
+    });
+});
+
+
 app.use(express.json());
 app.get('/',(req,res)=>res.send('server is live!'));
 app.use('/api/ai',aiRouter)
@@ -17,8 +35,7 @@ app.use('/api/user',userRouter)
 app.get('/protected',(req,res)=>{
     const {userId}=getAuth(req);
     if (!userId){
-        return 
-        res.status(401).json({
+        return res.status(401).json({
             message:"Unauthorized"
         });
     }

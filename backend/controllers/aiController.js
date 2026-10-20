@@ -1,13 +1,13 @@
 import OpenAI from "openai";
-import sql from "../configs/db.js";
+import sql from "../config/db.js";
 import axios from 'axios';
-import pdf from 'pdf-parse/lib/pdf-parse.js';
+import * as pdf from 'pdf-parse';
 import { clerkClient } from "@clerk/express";
-import {v2 as cloudinary} from './cloudinary';
+import { v2 as cloudinary } from 'cloudinary';
 import fs from 'fs';
 
 const AI = new OpenAI({
-    apiKey: process.env.GEMINI_API-KEY,
+    apiKey: process.env["GEMINI_API-KEY"],
     baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/"
 });
 export const generateArticle = async ()=>{

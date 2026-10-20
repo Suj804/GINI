@@ -20,6 +20,7 @@ export const CreditsProvider = ({ children }) => {
   const refreshCredits = useCallback(async () => {
     try {
       const token = await getTokenRef.current();
+      console.log("Clerk token available:", Boolean(token));
       const { data } = await api.get("/api/user/credits", {
         headers: { Authorization: `Bearer ${token}` },
       });
