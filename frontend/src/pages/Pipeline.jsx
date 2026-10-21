@@ -1,0 +1,1 @@
+import PromptTool from'../components/PromptTool.jsx';export default function Pipeline(){return<PromptTool endpoint="pipeline" title="Idea → Article → Image → Final Content" cost={6} placeholder="Enter your idea" rows={3}/>}

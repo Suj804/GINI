@@ -1,0 +1,1 @@
+import PromptTool from'../components/PromptTool.jsx';export default function ImageGen(){return<PromptTool endpoint="image" title="Image Generation" cost={3} placeholder="Describe the image you want" rows={3}/>}

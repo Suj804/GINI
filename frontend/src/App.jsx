@@ -1,52 +1,15 @@
-import { Navigate, Route, Routes } from "react-router-dom";
-import { Toaster } from "react-hot-toast";
-import Home from "./pages/Home";
-import Layout from "./pages/Layout";
-import Dashboard from "./pages/Dashboard";
-import WriteArticle from "./pages/WriteArticle";
-import BlogTitles from "./pages/BlogTitles";
-import GenerateImages from "./pages/GenerateImages";
-import RemoveBackground from "./pages/RemoveBackground";
-import RemoveObject from "./pages/RemoveObject";
-import ReviewResume from "./pages/ReviewResume";
-import Rewrite from "./pages/Rewrite";
-import Summarize from "./pages/Summarize";
-import ToneConvert from "./pages/ToneConvert";
-import IdeaToContent from "./pages/IdeaToContent";
-import Workspaces from "./pages/Workspaces";
-import Favourites from "./pages/Favourites";
-import History from "./pages/History";
-import Community from "./pages/Community";
-import Profile from "./pages/Profile";
-
-const App = () => {
-  return (
-    <div>
-      <Toaster />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/ai" element={<Layout />}>
-          <Route index element={<Dashboard />} />
-          <Route path="write-article" element={<WriteArticle />} />
-          <Route path="blog-titles" element={<BlogTitles />} />
-          <Route path="generate-images" element={<GenerateImages />} />
-          <Route path="remove-background" element={<RemoveBackground />} />
-          <Route path="remove-object" element={<RemoveObject />} />
-          <Route path="review-resume" element={<ReviewResume />} />
-          <Route path="rewrite" element={<Rewrite />} />
-          <Route path="summarize" element={<Summarize />} />
-          <Route path="tone" element={<ToneConvert />} />
-          <Route path="idea-to-content" element={<IdeaToContent />} />
-          <Route path="workspaces" element={<Workspaces />} />
-          <Route path="favourites" element={<Favourites />} />
-          <Route path="history" element={<History />} />
-          <Route path="community" element={<Community />} />
-          <Route path="profile" element={<Profile />} />
-        </Route>
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </div>
-  );
-};
-
-export default App;
+import{Routes,Route,Navigate}from'react-router-dom';
+import Layout from'./components/Layout.jsx';import ProtectedRoute from'./components/ProtectedRoute.jsx';
+import Login from'./pages/Login.jsx';import Register from'./pages/Register.jsx';import Dashboard from'./pages/Dashboard.jsx';
+import TextTool from'./pages/TextTool.jsx';import ImageGen from'./pages/ImageGen.jsx';import Pipeline from'./pages/Pipeline.jsx';
+import Resume from'./pages/Resume.jsx';import BackgroundRemoval from'./pages/BackgroundRemoval.jsx';import ObjectRemoval from'./pages/ObjectRemoval.jsx';
+import Library from'./pages/Library.jsx';import Profile from'./pages/Profile.jsx';import Admin from'./pages/Admin.jsx';
+export default function App(){return<Routes>
+  <Route path="/login" element={<Login/>}/><Route path="/register" element={<Register/>}/>
+  <Route element={<ProtectedRoute><Layout/></ProtectedRoute>}>
+    <Route index element={<Dashboard/>}/><Route path="tools/:id" element={<TextTool/>}/>
+    <Route path="image" element={<ImageGen/>}/><Route path="pipeline" element={<Pipeline/>}/><Route path="resume" element={<Resume/>}/>
+    <Route path="background-removal" element={<BackgroundRemoval/>}/><Route path="object-removal" element={<ObjectRemoval/>}/>
+    <Route path="library" element={<Library/>}/><Route path="profile" element={<Profile/>}/>
+    <Route path="admin" element={<ProtectedRoute admin><Admin/></ProtectedRoute>}/></Route>
+  <Route path="*" element={<Navigate to="/"/>}/></Routes>}

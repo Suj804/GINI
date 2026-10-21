@@ -1,24 +1,3 @@
-import { createRoot } from "react-dom/client";
-import "./index.css";
-import App from "./App.jsx";
-import { BrowserRouter } from "react-router-dom";
-import { ClerkProvider } from "@clerk/clerk-react";
-import { CreditsProvider } from "./context/CreditsContext";
-
-const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
-
-if (!PUBLISHABLE_KEY) {
-  throw new Error("Missing Publishable Key: set VITE_CLERK_PUBLISHABLE_KEY in client/.env");
-}
-
-createRoot(document.getElementById("root")).render(
-  <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/"
-    appearance={{ variables: { colorPrimary: "#8b5cf6", borderRadius: "0.75rem" } }}
-  >
-    <BrowserRouter>
-      <CreditsProvider>
-        <App />
-      </CreditsProvider>
-    </BrowserRouter>
-  </ClerkProvider>
-);
+import React from'react';import{createRoot}from'react-dom/client';import{BrowserRouter}from'react-router-dom';
+import App from'./App.jsx';import{AuthProvider}from'./context/AuthContext.jsx';import{ToastProvider}from'./context/ToastContext.jsx';
+createRoot(document.getElementById('root')).render(<BrowserRouter><ToastProvider><AuthProvider><App/></AuthProvider></ToastProvider></BrowserRouter>);

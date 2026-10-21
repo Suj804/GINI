@@ -1,60 +1,14 @@
-import { Gem, Sparkles } from "lucide-react";
-import { Link } from "react-router-dom";
-import CreationItem from "../components/CreationItem";
-import useFetchList from "../hooks/useFetchList";
-import { useCredits } from "../context/CreditsContext";
-
-const Dashboard = () => {
-  const { items: creations, loading } = useFetchList("/api/user/get-user-creations", "creations");
-  const { credits } = useCredits();
-
-  return (
-    <div className="h-full overflow-y-scroll p-6">
-      <div className="flex justify-start gap-4 flex-wrap">
-        <div className="flex justify-between items-center w-72 p-4 px-6 bg-white rounded-xl border border-violet-100">
-          <div className="text-slate-600">
-            <p className="text-sm">Total creations</p>
-            <h2 className="text-xl font-semibold">{creations.length}</h2>
-          </div>
-          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#3588F2] to-[#0BB0D7] text-white flex justify-center items-center">
-            <Sparkles className="w-5 text-white" />
-          </div>
-        </div>
-
-        <div className="flex justify-between items-center w-72 p-4 px-6 bg-white rounded-xl border border-violet-100">
-          <div className="text-slate-600">
-            <p className="text-sm">Credits remaining</p>
-            <h2 className="text-xl font-semibold">{credits ?? "—"}</h2>
-          </div>
-          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#FF61C5] to-[#9E53EE] text-white flex justify-center items-center">
-            <Gem className="w-5 text-white" />
-          </div>
-        </div>
-      </div>
-
-      {loading ? (
-        <div className="flex justify-center items-center h-3/4">
-          <span className="w-11 h-11 rounded-full border-3 border-purple-500 border-t-transparent animate-spin"></span>
-        </div>
-      ) : (
-        <div className="space-y-3">
-          <div className="mt-6 mb-4 flex items-center justify-between max-w-5xl">
-            <p>Recent creations</p>
-            <Link to="/ai/history" className="text-sm text-primary hover:underline">
-              View all history
-            </Link>
-          </div>
-          {creations.length === 0 ? (
-            <p className="text-sm text-gray-500">
-              Nothing here yet. Pick a tool from the sidebar to create your first output.
-            </p>
-          ) : (
-            creations.slice(0, 5).map((item) => <CreationItem key={item.id} item={item} />)
-          )}
-        </div>
-      )}
-    </div>
-  );
-};
-
-export default Dashboard;
+import{Link}from'react-router-dom';import{card}from'../components/ui.js';import Logo from'../components/Logo.jsx';import{useAuth}from'../context/AuthContext.jsx';
+const groups=[
+ ['✍️ Write',[['/tools/article','✍️','Article Generator','Structured articles from any topic',2],['/tools/titles','💡','Blog Titles','10 catchy, SEO-friendly titles',1],['/tools/rewrite','🔄','Rewriter','Improve and polish your text',1],['/tools/summarize','📝','Summarizer','Short summary plus key points',1],['/tools/tone','🎭','Tone Converter','Formal, casual, simple and more',1]]],
+ ['🎨 Create',[['/image','🎨','Image Generation','Turn words into pictures',3],['/pipeline','🚀','Idea → Content','Idea to article to image in one go',6]]],
+ ['💼 Career',[['/resume','📄','Resume ATS Score','Score, missing keywords, tips',3]]],
+ ['🖼️ Photo Magic',[['/background-removal','✂️','Background Removal','Cut out the background',3],['/object-removal','🧹','Object Removal','Paint over it, make it vanish',3]]]];
+export default function Dashboard(){const{user}=useAuth();
+  return<div className="space-y-6"><div className={card+' flex items-center gap-5 p-6 flex-wrap'}><div className="lamp-float"><Logo size={84}/></div>
+    <div className="flex-1 min-w-[14rem]"><p className="text-white/60 text-sm">Welcome back</p><h2 className="text-3xl font-bold">Hello, <span className="brand">{user.name}</span></h2><p className="text-white/70">What shall we create today? Your wish is my command.</p></div>
+    <div className="gem rounded-2xl px-5 py-3 text-center"><div className="text-3xl font-extrabold">{user.credits}</div><div className="text-xs">credits left</div></div></div>
+    {groups.map(([title,items])=><section key={title}><h3 className="text-lg font-semibold mb-3 text-white/90">{title}</h3>
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">{items.map(([to,icon,t,d,c])=><Link key={to} to={to} className={card+' tool-card no-underline text-white flex gap-4 items-center'}>
+        <div className="tool-icon">{icon}</div><div className="flex-1"><h4 className="font-semibold">{t}</h4><p className="text-sm text-white/65">{d}</p></div>
+        <span className="text-xs gem rounded-full px-2 py-0.5">{c} cr</span></Link>)}</div></section>)}</div>}

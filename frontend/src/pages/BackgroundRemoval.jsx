@@ -1,0 +1,1 @@
+import FileTool from'../components/FileTool.jsx';export default function BackgroundRemoval(){return<FileTool endpoint="bgremove" title="Background Removal" cost={3} fields={[['image','Image','image/*']]}/>}

@@ -1,0 +1,1 @@
+import FileTool from'../components/FileTool.jsx';export default function Resume(){return<FileTool endpoint="resume" title="Resume Analysis & ATS Score" cost={3} job fields={[['file','Resume (PDF)','.pdf']]}/>}
